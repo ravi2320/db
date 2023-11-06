@@ -1,0 +1,60 @@
+=====================================================================================
+			| * Practical 14 * |
+===================================================================================
+Write a Stored Procedure namely Proc_Grade for the categorization of student. If marks scored by students in examination is <=1500 and marks>=990 then student will be placed in distinction category if marks scored are between 989 and 900 category is first class, if marks 899 and 825 category is Higher Second Class.
+Write a PL/SQL block for using procedure created with above requirement.
+
+Stud_Marks(Roll, Name, Total_marks)
+Result(Roll, Name, Class)
+===================================================================================
+create table stud_marks(Roll number, Name varchar2(30), Total_Marks number);
+
+insert into stud_marks values(101, 'Ravindra', 1250);
+
+insert into stud_marks values(102, 'Rajendra', 950);
+
+insert into stud_marks values(103, 'Sampada', 850);
+
+insert into stud_marks values(104, 'Ravindra', 820);
+
+create table result(Roll number, Name varchar2(30), Class varchar2(30));
+
+CREATE OR REPLACE PROCEDURE proc_cal_grade(rno IN number)
+AS
+	tname varchar2(30);
+	tmarks number;
+	grade varchar2(30);
+BEGIN
+	select Name, Total_Marks into tname, tmarks from stud_marks where Roll = rno;
+	IF tmarks BETWEEN 990 AND 1500 THEN
+		grade := 'Distinction';
+	ELSIF tmarks BETWEEN 900 and 989 THEN
+		grade := 'First Class';
+	ELSIF tmarks BETWEEN 825 AND 899 THEN
+		grade := 'Higher Second Class';
+	ELSE
+		grade := 'Fail';
+	END IF;
+
+	dbms_output.put_line('Grade for Roll No : ' || rno || ' is : ' || grade);
+	insert into result values(rno, tname, grade);
+	
+	EXCEPTION
+		WHEN NO_DATA_FOUND THEN
+			dbms_output.put_line('Data not Found');
+		WHEN OTHERS THEN
+			dbms_output.put_line('SQL Internal Error');
+END;
+/
+
+DECLARE 
+	rno number := &rno;
+BEGIN
+	proc_cal_grade(rno);
+END;
+/
+
+select * from Result;
+END;
+/
+=====================================================================================
