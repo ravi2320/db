@@ -1,0 +1,26 @@
+=====================================================================================
+				| * 17. Trigger * |
+=====================================================================================
+Consider CUSTOMER (ID, Name, Age, Address, Salary) create a row level trigger for the CUSTOMERS table that would fire for INSERT or UPDATE or DELETE operations performed on the CUSTOMERS table. This trigger will display the salary difference between the old values and new values.
+=====================================================================================
+
+create table customer1(ID number, Name varchar2(30), Age number, Address varchar2(30), Salary number);
+
+CREATE OR REPLACE TRIGGER cust_salary_trigger
+BEFORE INSERT OR DELETE OR UPDATE ON customer1
+FOR EACH ROW
+BEGIN
+	IF INSERTING THEN
+		dbms_output.put_line('New Salary for Emp( '||:NEW.ID||' ) is : ' || :NEW.Salary);
+	ELSIF UPDATING THEN
+		dbms_output.put_line('Salary Difference for Emp( '||:NEW.ID||' ) is : ' || (:OLD.Salary - :NEW.Salary));
+	ELSIF DELETING THEN
+		DBMS_OUTPUT.PUT_LINE('Before Deletion Salary is : '||:OLD.Salary);	END IF;
+END;
+/		
+
+insert into customer1 values(101, 'Ravindra', 20, 'Pune', 50000);
+
+update customer1 set salary = 25000 where id = 101;
+
+delete from customer1 where id = 101;
