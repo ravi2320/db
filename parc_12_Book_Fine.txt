@@ -1,0 +1,73 @@
+=====================================================================================
+			| * Practical 12 * |
+=====================================================================================
+1.Borrower(Roll_no, Name, DateofIssue, NameofBook, Status)
+2.Fine(Roll_no,Date,Amt)
+
+Accept Roll_no and NameofBook from user.
+Write a PL/SQL procedure. The procedure calculates the fine and performs the book returning operation
+
+Assume suitable conditions for calculating fine.
+
+Check the number of days (from date of issue).
+
+If days are between 15 to 30 then fine amount will be Rs 5per day.
+
+If no. of days>30, per day fine will be Rs 50 per day and for days less than 30, Rs. 5 per day.
+
+If condition of fine is true, then details will be stored into fine table.
+
+Also handles the exception by named exception handler or user define exception handler.
+=====================================================================================
+create table Borrower(Roll_no number, Name varchar2(30), dateOfIssue date, NameOfBook varchar2(3), status varchar2(2));
+
+create table Fine(Roll_no number, retDate date, Amt number);
+
+insert into Borrower values(101, 'Ravindra', '1-october-2023', 'DBMS', 'I');
+
+insert into Borrower values(102, 'Rajendra', '16-october-2023', 'CPP', 'I');
+
+CREATE OR REPLACE PROCEDURE proc_cal_fin(rno IN number, bookName IN varchar2)
+AS
+	
+	noOfDays number;
+	DOI date;
+	FineAmt number;
+ BEGIN
+
+	select dateOfIssue into DOI from borrower where Roll_no = rno;
+
+	noOfDays := TRUNC(SYSDATE - DOI);
+
+	IF noOfDays BETWEEN 15 AND 30 THEN
+		FineAmt := noOfDays * 5;
+	ELSIF noOfDays > 30 THEN
+		FineAmt := 50 * (noOfDays - 30) + 150;
+	ELSE
+		FineAmt := 0;
+	END IF;
+
+	insert into Fine values(rno, SYSDATE, FineAmt);
+	delete from Borrower where Roll_no = rno;
+
+	EXCEPTION
+		WHEN NO_DATA_FOUND THEN
+			dbms_output.put_line('No data found');
+		WHEN OTHERS THEN
+			dbms_output.put_line('SQL internal Error');
+
+END;
+/
+
+DECLARE
+	rno number := &rno;
+	bookName varchar2(30) := '&bookName';
+BEGIN
+	proc_cal_fin(rno, bookName);
+END;
+/
+
+select * from Borrower;
+
+select * from Fine;
+=====================================================================================
