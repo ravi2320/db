@@ -1,0 +1,50 @@
+=====================================================================================
+			| * Practical 12 * |
+===================================================================================
+Consider table Student (Roll, Name, Attendance ,Status)
+
+Write a PL/SQL block for following requirements and handle the exceptions. Roll no. of students will be entered by the user. Attendance of roll no. entered by user will be checked in the Stud table. If attendance is less than 75% then display the message “Term not granted” and set the status in stud table as “Detained”. Otherwise display message “Term granted” and set the status in stud table as “Not Detained”
+===================================================================================
+create table Student(Roll_no number, Name varchar2(30), Attendance number, status varchar2(30));
+
+
+insert into Student values(101, 'Ravindra', 85, '');
+
+insert into Student values(102, 'Rajendra', 60, '');
+
+select * from Student;
+
+CREATE OR REPLACE PROCEDURE proc_cal_TermGrant(rno IN number)
+AS
+	
+	attend number;
+ BEGIN
+
+	select Attendance into Attend from Student where Roll_no = rno;
+
+	IF Attend >= 75 THEN
+		dbms_output.put_line('Roll No : ' || rno || ' Term Granted');
+		update Student set status = 'Not Detained' where Roll_no = rno;
+	ELSE
+		dbms_output.put_line('Roll No : ' || rno || ' Term Not Granted');
+		update Student set status = 'detained' where Roll_no = rno;
+	END IF;
+	EXCEPTION
+		WHEN NO_DATA_FOUND THEN
+			dbms_output.put_line('No data found');
+		WHEN OTHERS THEN
+			dbms_output.put_line('SQL internal Error');
+
+END;
+/
+
+DECLARE
+	rno number := &rno;
+BEGIN
+	proc_cal_TermGrant(rno);
+END;
+/
+
+select * from Student;
+
+=====================================================================================
