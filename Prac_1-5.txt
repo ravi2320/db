@@ -1,0 +1,130 @@
+====================================================================================
+				| * Practical No : 1 * |
+====================================================================================
+Account(Acc_no, branch_name,balance)
+branch(branch_name,branch_city,assets)
+customer(cust_name,cust_street,cust_city)
+Depositor(cust_name,acc_no)
+Loan(loan_no,branch_name,amount)
+Borrower(cust_name,loan_no)
+Solve following query:
+Create above tables with appropriate constraints like primary key, foreign key, check constraints, not null etc.
+a)Find the names of all branches in loan relation.
+b)Find all loan numbers for loans made at 'Shivaji Nagar' Branch with loan amount > 12000.
+c)Find all customers who have a loan from bank. Find their names,loan_no and loan amount.
+d)List all customers in alphabetical order who have loan from Akurdi
+=====================================================================================
+
+create table branch(branch_name varchar2(30) primary key, branch_city varchar2(30), assests varchar2(30));
+
+create table account(acc_no number primary key, branch_name varchar2(30) references branch(branch_name), balance number);
+
+create table customer(cust_name varchar2(30) primary key, cust_street varchar2(30), cust_city varchar(30));
+
+create table depositor(cust_name varchar2(30) references customer(cust_name), acc_no number references account(acc_no));
+
+create table loan(loan_no number primary key, branch_name varchar2(30), constraint fk_loan_branch foreign key(branch_name) references branch(branch_name));
+
+create table borrower(cust_name varchar2(30), loan_no number, constraint fk_borrower_customer foreign key(cust_name) references customer(cust_name), constraint fk_borrower_loan foreign key(loan_no) references loan(loan_no));
+
+--insert data
+INSERT INTO branch values('Shivaji Nagar', 'Pune', 'Loan');
+INSERT INTO branch values('Swarget', 'Pune', 'Loan');
+INSERT INTO branch values('Akurdi', 'Pune', 'Loan');
+
+INSERT INTO account VALUES(101, 'Swarget', 50000);
+INSERT INTO account VALUES(102, 'Akurdi', 55000);
+INSERT INTO account VALUES(103, 'Akurdi', 59000);
+INSERT INTO account VALUES(104, 'Shivaji Nagar', 65000);
+INSERT INTO account VALUES(105, 'Shivaji Nagar', 68000);
+
+INSERT INTO customer VALUES('Ravindra', 'Vishrantwadi', 'Pune');
+INSERT INTO customer VALUES('Sagar', 'Swarget', 'Pune');
+INSERT INTO customer VALUES('Sampada', 'Akurdi', 'Pune');
+INSERT INTO customer VALUES('Srushti', 'Dhayari', 'Pune');
+
+INSERT INTO depositor VALUES('Ravindra', 102);
+INSERT INTO depositor VALUES('Sagar', 101);
+INSERT INTO depositor VALUES('Srushti', 104);
+
+INSERT INTO loan VALUES(1, 'Shivaji Nagar', 25000);
+INSERT INTO loan VALUES(2, 'Swarget', 35000);
+INSERT INTO loan VALUES(3, 'Shivaji Nagar', 5000);
+INSERT INTO loan VALUES(4, 'Akurdi', 50000);
+
+INSERT INTO borrower VALUES('Ravindra', 3);
+INSERT INTO borrower VALUES('Sampada', 1);
+INSERT INTO borrower VALUES('Sagar', 2);
+INSERT INTO borrower VALUES('Ravindra', 4);
+INSERT INTO borrower VALUES('Sagar', 4);
+INSERT INTO borrower VALUES('Sampada', 4);
+
+
+--Practical 1
+SELECT branch_name FROM loan;
+SELECT loan_no from loan where branch_name = 'Shivaji Nagar';
+SELECT l.loan_no, b.cust_name, l.amount from borrower b, loan l where b.loan_no = l.loan_no;
+SELECT cust_name FROM borrower WHERE loan_no = 4 ORDER BY cust_name DESC;
+
+
+--Practical 2
+SELECT cust_name FROM borrower UNION SELECT cust_name FROM depositor;
+SELECT cust_name FROM depositor INTERSECT cust_name FROM borrower;
+SELECT cust_name FROM depositor MINUS SELECT cust_name FROM borrower;
+SELECT AVG(balance)FROM account where branch_name = 'Akurdi';
+
+
+--Practical 3
+SELECT branch_name, AVG(balance) FROM account where balance > 15000 GROUP BY branch_name;
+SELECT COUNT(*) FROM customer;
+SELECT SUM(amount) from loan;
+DELETE FROM loan WHERE amount BETWEEN 1300 AND 1500;
+
+--Practical 4
+
+--View
+CREATE OR REPLACE VIEW cust_view AS
+SELECT d.acc_no, d.cust_name, b.loan_no from borrower b, depositor d where b.cust_name = d.cust_name;
+
+--Index
+CREATE INDEX cust_idx ON customer(cust_city);
+drop cust_idx;
+
+
+--Sequence
+CREATE SEQUENCE loan_seq
+START WITH 7
+MAXVALUE 20 
+INCREMENT BY 1
+NOCYCLE;
+
+INSERT INTO loan VALUES(loan_seq.nextval, 'Shivaji Nagar', 5000);
+SELECT * from loan;
+
+
+--SYNONYM
+CREATE SYNONYM cust_syn FOR customer;
+SELECT * FROM cust_syn;
+
+
+
+--Practical 5
+SELECT c.cust_name FROM customer c INNER JOIN depositor d ON c.cust_name = d.cust_name;
+
+SELECT d.cust_name FROM depositor d LEFT JOIN borrower b ON d.cust_name = b.cust_name;
+
+SELECT d.cust_name FROM depositor d RIGHT OUTER JOIN borrower b ON d.cust_name = b.cust_name;
+
+SELECT d.cust_name FROM depositor d FULL OUTER JOIN borrower b ON d.cust_name = b.cust_name;
+
+--VIEW
+CREATE VIEW account_view AS SELECT * from account;
+SELECT * FROM account_view;
+
+--SUBQUERY
+select * from account where balance > (select avg(balance) from account);
+
+select max(balance) from account where balance < (select max(balance) from account);
+
+select min(balance) from account where balance > (select min(balance) from account);
+
