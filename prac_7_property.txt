@@ -1,0 +1,40 @@
+===================================================================================
+				| * Practical 7 * |
+===================================================================================
+Create the following tables with suitable constraints.
+Insert data and solve the following queries:
+PROPERTIES(Pno, Type, Sq_Ft_Area, Rent, Address, Status, Owner No)
+OWNERS (OwnerNo, OwnerName, Phno)
+1. Display all 1 BHK apartments in Kothrud which are not rented
+2. Display all properties owned by “Gopal”
+3. Write a query to display the smallest property of each owner
+4. Display all properties in Kothrud in Descending order of rent
+===================================================================================
+
+create table Properties(Pno number primary key, Type varchar2(30), sq_ft number, Rent number, Address varchar2(30), Status varchar2(30), Owner_no number,
+constraint fk_property_owner foreign key(owner_no) references owners(owner_no));
+
+create table owners(owner_no number primary key, owner_name varchar2(30), Phno number(10));
+
+INSERT INTO owners VALUES(101, 'Ravindra', 9022404626);
+INSERT INTO owners VALUES(102, 'Gopal', 9022884626);
+INSERT INTO owners VALUES(103, 'Rajendra', 7022404626);
+
+INSERT INTO properties VALUES(9, '1BHK', 500, 12000, 'Koregaon Park', 'Rented', 101);
+INSERT INTO properties VALUES(2, '1BHK', 500, 12000, 'Kothrud', 'Not Rented', 102);
+INSERT INTO properties VALUES(3, '2BHK', 1200, 18000, 'Swarget', 'Rented', 103);
+INSERT INTO properties VALUES(4, '3BHK', 2000, 25000, 'Kothrud', 'Not Rented', 101);
+INSERT INTO properties VALUES(5, '1BHK', 500, 11000, 'Gokhalenagar', 'Rented', 102);
+INSERT INTO properties VALUES(6, '2BHK', 800, 16000, 'Kothrud', 'Not Rented', 103);
+INSERT INTO properties VALUES(7, '1BHK', 600, 14000, 'Shivaji Nagr', 'Rented', 101);
+INSERT INTO properties VALUES(8, '2BHK', 1500, 20000, 'Gavthan', 'Not Rented', 102);
+
+select * from properties where Type='1BHK'and Address = 'Kothrud' and Status = 'Not Rented'; 
+
+select * from properties where owner_no = (select owner_no from owners where owner_name = 'Gopal');  
+
+select owner_no, min(sq_ft) from properties group by owner_no;
+
+select * from properties where Address = 'Kothrud' order by rent desc; 
+
+===================================================================================
