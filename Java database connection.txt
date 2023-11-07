@@ -1,0 +1,100 @@
+create table student
+( 
+
+Roll_No NUMBER(10),
+NAME VARCHAR2(10),
+BRACH VARCHAR2(10)
+);
+
+
+(** CREATE A FILE NAME AS JdbcApp in eclipse**)
+(** ADD jar file **)
+(** create above table in database **)
+(** change system pssword in connection code **)
+
+
+/**(Mysql database)
+Class.forName("com.mysql.jdbc.Driver");
+Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/drugdatabase","root","1234");
+/**
+
+(** for oracle **)
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.util.Scanner;
+
+public class JdbcApp {
+
+	public static void main(String[] args) throws Exception
+	{
+
+		Class.forName("oracle.jdbc.driver.OracleDriver");
+		Connection con=DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","System","1234");
+		System.out.println("connected");
+		Scanner sc=new Scanner(System.in);
+		
+		int ch;
+		do
+		{
+			System.out.println("1-Insert\n2-Delete\n3-Upadate");
+			System.out.println("Enter your choise");
+			ch=sc.nextInt();
+
+			if(ch==1)
+			{
+				System.out.println("Enter student roll no ");
+				int rollno=sc.nextInt();
+				System.out.println("Enter student name : ");
+				String s_name=sc.next();
+				System.out.println("Enter student branch");
+				String branch=sc.next();
+				PreparedStatement ps=con.prepareStatement("Insert into student values (?,?,?)");
+				ps.setInt(1,rollno);
+				ps.setString(2,s_name);
+				ps.setString(3,branch);
+				int i=ps.executeUpdate();
+				if(i>0)
+				{
+					System.out.println("Record saved");
+				}else
+				{
+					System.out.println("Unable to save the record...... ");
+				}
+
+			}
+			if(ch==2)
+			{
+				System.out.println("Enter roll no delete a record ");
+				PreparedStatement ps=con.prepareStatement("delete from student where roll_no=?");
+				ps.setInt(1, sc.nextInt());
+				int i=ps.executeUpdate();
+				if(i>0)
+				{
+					System.out.println("Record deleted");
+				}else
+				{
+					System.out.println("Unable to delete the record...... ");
+				}
+			}
+			if(ch==3)
+			{
+				System.out.println("Enter roll no and branch to update in DB");
+				PreparedStatement ps=con.prepareStatement("update student set brach=? where roll_no=?");
+				ps.setInt(2, sc.nextInt());
+				ps.setString(1,sc.next());
+				int i=ps.executeUpdate();
+				if(i>0)
+				{
+					System.out.println("Record updated");
+				}else
+				{
+					System.out.println("Unable to updated the record...... ");
+				}
+			}
+			System.out.println("Do you want to continue 1/0");
+			
+			ch=sc.nextInt();
+		}while(ch==1);
+	}	
+}
