@@ -1,0 +1,40 @@
+===================================================================================
+				| * Practical 6 * |
+===================================================================================
+Create table Cust_Master(Cust_no, Cust_name, Qty_Ordered, Order_date, Cust_addr )
+Cust_no is defined as primary key,
+Insert ten records in the table.
+●List names of customers having 'a' as second letter in their name.
+●List customers who stay in city whose first letter is 'M'
+●Display order from Customer no C1002,C1005,C1007 and C1008
+●List Clients who stay in either 'Banglore or 'Manglore'
+●Create view Customer_View consisting of Cust_no, Qty_ordered and Order_date
+===================================================================================
+create table Cust_master(cust_no varchar2(20),cust_name varchar2(30),qty_ordered number(10),order_date Date,cust_addr varchar2(20));
+
+insert into Cust_master values('C1001','Sagar',10,'20-october-2023','pune');
+insert into Cust_master values('C1002','akash',17,'12-september-2023','Banglore');
+insert into Cust_master values('C1003','sameer',23,'28-october-2023','Mumbai');
+insert into Cust_master values('C1004','ashutosh',30,'02-august-2023','Manglore');
+insert into Cust_master values('C1005','vasant',200,'17-september-2023','Delhi');
+insert into Cust_master values('C1006','vedant',67,'06-october-2023','Manglore');
+insert into Cust_master values('C1007','gargi',90,'19-july-2023','Chennai');
+insert into Cust_master values('C1008','sampada',100,'3-august-2023','Banglore');
+insert into Cust_master values('C1009','rahul',130,'21-november-2023','Nashik');
+insert into Cust_master values('C1010','vijay',160,'12-october-2023','Nagpur');
+insert into Cust_master values('C1011','ramdas',80,'8-august-2023','Banglore');
+
+1. select cust_name from Cust_master where cust_name LIKE '_a%';
+
+2. select *from Cust_master where cust_addr LIKE 'M%';
+
+3. select qty_ordered from Cust_master where cust_no IN('C1002','C1005','C1007','C1008');
+
+4. select *from Cust_master where cust_addr IN('Banglore','Manglore');
+
+5. create view Customer_View as select cust_no,qty_ordered,order_date from Cust_master;
+
+===================================================================================
+
+
+

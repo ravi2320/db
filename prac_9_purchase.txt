@@ -1,0 +1,45 @@
+===================================================================================
+				| * Practical 9 * |
+===================================================================================
+Create following tables with suitable constraints. Insert data and solve the following queries:
+CUSTOMERS(CNo, Cname, Ccity, CMobile)
+ITEMS(INo, Iname, Itype, Iprice, Icount)
+PURCHASE(PNo, Pdate, Pquantity, Cno, INo)
+1.List all stationary items with price between 400/- to 1000/-
+2.Change the mobile number of customer “Gopal”
+3.Display the item with maximum price
+4.Display all purchases sorted from the most recent to the oldest
+===================================================================================
+
+create table customers(cno number primary key, cname varchar2(30), ccity varchar2(30), cmobile number(10));
+
+create table items(ino number primary key, iname varchar2(30), iprice number, icount number, itype varchar2(3));
+
+create table purchase(pno number primary key, pdate date, pquantity number, cno number references customers(cno), ino number references items(ino));
+
+INSERT INTO customers VALUES(101, 'Ravindra', 'Pune', 9022404626);
+INSERT INTO customers VALUES(102, 'Rajendra', 'Nashi', 6022404626);
+INSERT INTO customers VALUES(103, 'Radha', 'Nagpur', 8022404626);
+INSERT INTO customers VALUES(104, 'Gopal', 'Solapur', 7022404626);
+
+INSERT INTO items VALUES(1, 'Books', 500, 5, 'Stationary');
+INSERT INTO items VALUES(2, 'Glue', 10, 50, 'Stationary');
+INSERT INTO items VALUES(3, 'Motor', 500, 15, 'Mechanical');
+INSERT INTO items VALUES(4, 'Pipe', 100, 25, 'Civil');
+INSERT INTO items VALUES(5, 'Notebook', 80, 55, 'Stationary');
+INSERT INTO items VALUES(6, 'Scissor', 20, 35, 'Medical');
+
+INSERT INTO purchase VALUES(1001, '1-october-2023', 5, 101, 1);
+INSERT INTO purchase VALUES(1002, '15-october-2023', 15, 102, 2);
+INSERT INTO purchase VALUES(1003, '21-october-2023', 50, 103, 3);
+INSERT INTO purchase VALUES(1004, '10-october-2023', 20, 104, 4);
+
+
+select * from items where itype = 'Stationary' and iprice between 400 and 10000;
+
+update customers set cmobile = 8585858585 where cname = 'Gopal';
+
+select itype, max(iprice) from items group by itype;
+
+select * from purchase order by pdate desc;
+===================================================================================

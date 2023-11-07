@@ -1,0 +1,45 @@
+===================================================================================
+				| * Practical 10 * |
+===================================================================================
+Create following tables with suitable constraints.
+Insert data and solve the following queries:
+CUSTOMERS(CNo, Cname, Ccity, CMobile)
+ITEMS(INo, Iname, Itype, Iprice, Icount)
+PURCHASE(PNo, Pdate, Pquantity, Cno, INo)
+5.Count the number of customers in every city
+6.Display all purchased quantity of Customer Maya
+7.Display list of customers whose name ends with 'a'
+8.Create view which shows Iname, Price and Count of all stationary items in descending order of price
+===================================================================================
+
+create table customers(cno number primary key, cname varchar2(30), ccity varchar2(30), cmobile number(10));
+
+create table items(ino number primary key, iname varchar2(30), iprice number, icount number, itype varchar2(3));
+
+create table purchase(pno number primary key, pdate date, pquantity number, cno number references customers(cno), ino number references items(ino));
+
+INSERT INTO customers VALUES(101, 'Ravindra', 'Pune', 9022404626);
+INSERT INTO customers VALUES(102, 'Rajendra', 'Nashi', 6022404626);
+INSERT INTO customers VALUES(103, 'Radha', 'Nagpur', 8022404626);
+INSERT INTO customers VALUES(104, 'Gopal', 'Solapur', 7022404626);
+
+INSERT INTO items VALUES(1, 'Books', 500, 5, 'Stationary');
+INSERT INTO items VALUES(2, 'Glue', 10, 50, 'Stationary');
+INSERT INTO items VALUES(3, 'Motor', 500, 15, 'Mechanical');
+INSERT INTO items VALUES(4, 'Pipe', 100, 25, 'Civil');
+INSERT INTO items VALUES(5, 'Notebook', 80, 55, 'Stationary');
+INSERT INTO items VALUES(6, 'Scissor', 20, 35, 'Medical');
+
+INSERT INTO purchase VALUES(1001, '1-october-2023', 5, 101, 1);
+INSERT INTO purchase VALUES(1002, '15-october-2023', 15, 102, 2);
+INSERT INTO purchase VALUES(1003, '21-october-2023', 50, 103, 3);
+INSERT INTO purchase VALUES(1004, '10-october-2023', 20, 104, 4);
+
+select ccity, count(*) from customers group by ccity;
+
+select pquantity from purchase where cno = (select cno from customers where cname = 'Radha');
+
+select cname from customers where cname like '%a';
+
+create view item_view as select iname, iprice, icount from items where itype = 'Stationary';
+===================================================================================

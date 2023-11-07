@@ -1,0 +1,41 @@
+===================================================================================
+				| * Practical 7 * |
+===================================================================================
+Basic SQL Create following tables with suitable constraints.
+Insert data and solve the following queries:
+
+PROPERTIES(Pno, Type, Sq_Ft_Area, Rent, Address, Status, Owner No)
+OWNERS (OwnerNo, OwnerName, Phno)
+
+5.Create a view which shows OwnerName along with his Pno, type, Address and Rent
+6.Display the names of all Owners whose name has “ee”
+7.Display Pno, Type, Address, Rent and status of all properties with rent greater than 15000/- and less than 22000/-
+8.Display different property types registered with the real estate agency
+===================================================================================
+
+create table Properties(Pno number primary key, Type varchar2(30), sq_ft number, Rent number, Address varchar2(30), Status varchar2(30), Owner_no number,
+constraint fk_property_owner foreign key(owner_no) references owners(owner_no));
+
+create table owners(owner_no number primary key, owner_name varchar2(30), Phno number(10));
+
+INSERT INTO owners VALUES(101, 'Ravindra', 9022404626);
+INSERT INTO owners VALUES(102, 'Gopal', 9022884626);
+INSERT INTO owners VALUES(103, 'Rajendra', 7022404626);
+
+INSERT INTO properties VALUES(9, '1BHK', 500, 12000, 'Koregaon Park', 'Rented', 101);
+INSERT INTO properties VALUES(2, '1BHK', 500, 12000, 'Kothrud', 'Not Rented', 102);
+INSERT INTO properties VALUES(3, '2BHK', 1200, 18000, 'Swarget', 'Rented', 103);
+INSERT INTO properties VALUES(4, '3BHK', 2000, 25000, 'Kothrud', 'Not Rented', 101);
+INSERT INTO properties VALUES(5, '1BHK', 500, 11000, 'Gokhalenagar', 'Rented', 102);
+INSERT INTO properties VALUES(6, '2BHK', 800, 16000, 'Kothrud', 'Not Rented', 103);
+INSERT INTO properties VALUES(7, '1BHK', 600, 14000, 'Shivaji Nagr', 'Rented', 101);
+INSERT INTO properties VALUES(8, '2BHK', 1500, 20000, 'Gavthan', 'Not Rented', 102);
+
+create view property_owner_view as select o.owner_name, p.pno, p.type, p.Address, p.rent from Properties p, owners o where p.owner_no = o.owner_no;
+
+select owner_name from owners where owner_name like '%ee';
+
+select pno, type, Address, Rent, Status from properties where rent between 15000 and 22000;
+
+select distinct type from properties;
+===================================================================================
