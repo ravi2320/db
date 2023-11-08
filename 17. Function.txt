@@ -1,0 +1,50 @@
+==============================================================
+		| *  17.PL/SQL Function * |
+==============================================================
+Create the following table with suitable constraints.
+STUDENT( Rno, Name, TotMarks, Class)
+Write a PL/SQL function to count the number of Distinction, FirstClass, HigherSecondClass, Second Class and Fail students
+==============================================================
+CREATE TABLE STUDENT5 (
+  Rno NUMBER NOT NULL,
+  Name VARCHAR2(50) NOT NULL,
+  TotMarks NUMBER NOT NULL,
+  Class VARCHAR2(10),
+  CONSTRAINT pk_student PRIMARY KEY (Rno)
+);
+
+insert into student5 values(101, 'Ravindra', 720, 'Distinction');
+
+insert into student5 values(102, 'Sagar', 695, 'FirstClass');
+
+insert into student5 values(103, 'Nikhil', 450, 'Fail');
+
+insert into student5 values(104, 'Akshata', 550, 'SecondClass');
+
+insert into student5 values(105, 'Srushti', 650, 'HigherSecondClass');
+
+insert into student5 values(106, 'Sampada', 700, 'FirstClass');
+
+CREATE OR REPLACE FUNCTION CountStudentCategories RETURN VARCHAR2 IS
+    DistinctionCount NUMBER := 0;
+    FirstClassCount NUMBER := 0;
+    HigherSecondClassCount NUMBER := 0;
+    SecondClassCount NUMBER := 0;
+    FailCount NUMBER := 0;
+BEGIN
+    -- Count the number of students in each category
+    SELECT COUNT(*) INTO DistinctionCount FROM STUDENT5 WHERE Class = 'Distinction';
+    SELECT COUNT(*) INTO FirstClassCount FROM STUDENT5 WHERE Class = 'FirstClass';
+    SELECT COUNT(*) INTO HigherSecondClassCount FROM STUDENT5 WHERE Class = 'HigherSecondClass';
+    SELECT COUNT(*) INTO SecondClassCount FROM STUDENT5 WHERE Class = 'SecondClass';
+    SELECT COUNT(*) INTO FailCount FROM STUDENT5 WHERE Class = 'Fail';
+
+    -- Return the counts as a formatted string
+    RETURN 'Distinction: ' || DistinctionCount || ', FirstClass: ' || FirstClassCount ||
+           ', HigherSecondClass: ' || HigherSecondClassCount || ', SecondClass: ' || SecondClassCount ||
+           ', Fail: ' || FailCount;
+END;
+/
+
+SELECT CountStudentCategories FROM DUAL;
+
